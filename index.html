@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jejak Anom: Petualangan Menuju Puncak Nusantara</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-family/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0fdf4;
+        }
+        .font-fredoka {
+            font-family: 'Fredoka', cursive;
+        }
+        /* Custom Scrollbar for Material/Quiz Containers */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #86efac;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4ade80;
+        }
+        
+        /* Climber Marker Animation */
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-climber {
+            animation: bounce-slow 1.5s infinite ease-in-out;
+        }
+
+        /* Pulse Glow Effect for Mountain Peak Flag */
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 6px rgba(234, 179, 8, 0.8)); }
+            50% { filter: drop-shadow(0 0 16px rgba(234, 179, 8, 1)); }
+        }
+        .glow-flag {
+            animation: pulse-glow 2s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <!-- TOP NAVBAR -->
+    <header class="bg-emerald-600 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white/20 p-2 rounded-xl backdrop-blur-md">
+                    <i class="fa-solid fa-mountain text-amber-300 text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-fredoka text-lg sm:text-xl font-bold tracking-wide">JEJAK ANOM</h1>
+                    <p class="text-xs text-emerald-100 hidden sm:block">Petualangan Asal Usul Nenek Moyang Indonesia • Kelas X SMA</p>
+                </div>
+            </div>
+
+            <!-- Stats Bar (Visible during gameplay) -->
+            <div id="header-stats" class="hidden flex items-center space-x-3 sm:space-x-6 text-sm font-bold">
+                <!-- Timer -->
+                <div class="bg-emerald-800/60 px-3 py-1.5 rounded-xl border border-emerald-400/30 flex items-center space-x-2">
+                    <i class="fa-solid fa-clock text-amber-300 animate-pulse"></i>
+                    <span id="timer-display">20:00</span>
+                </div>
+                <!-- Score -->
+                <div class="bg-amber-500 text-white px-3 py-1.5 rounded-xl shadow flex items-center space-x-1.5">
+                    <i class="fa-solid fa-star"></i>
+                    <span id="score-display">Skor: 0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-6xl mx-auto w-full p-4 flex-1 flex flex-col justify-center">
+
+        <!-- ================= PAGE 1: REGISTRATION / START SCREEN ================= -->
+        <section id="screen-welcome" class="max-w-md mx-auto w-full bg-white rounded-3xl shadow-2xl border-4 border-emerald-400 p-6 sm:p-8 text-center my-auto">
+            <div class="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
+                <i class="fa-solid fa-person-hiking text-emerald-600 text-5xl"></i>
+            </div>
+            
+            <h2 class="font-fredoka text-2xl sm:text-3xl font-bold text-emerald-800 mb-2">SIAP MENDAKI?</h2>
+            <p class="text-sm text-slate-600 mb-6 leading-relaxed">
+                Jelajahi 20 Pos Pendakian menuju Puncak Nusantara. Pelajari materinya dan selesaikan tantangannya!
+            </p>
+
+            <form id="form-student" onsubmit="startGame(event)" class="space-y-4 text-left">
+                <div>
+                    <label for="student-name" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                        <i class="fa-solid fa-user mr-1 text-emerald-600"></i> Nama Lengkap Siswa:
+                    </label>
+                    <input type="text" id="student-name" required placeholder="Contoh: Ahmad Raihan" 
+                        class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition font-semibold">
+                </div>
+
+                <div>
+                    <label for="student-class" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                        <i class="fa-solid fa-school mr-1 text-emerald-600"></i> Kelas / Fase:
+                    </label>
+                    <input type="text" id="student-class" required placeholder="Contoh: X IPA 1 / Fase E" 
+                        class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition font-semibold">
+                </div>
+
+                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-fredoka text-xl py-3.5 rounded-2xl shadow-lg hover:shadow-xl transition transform active:scale-95 border-b-4 border-emerald-700 flex items-center justify-center space-x-2">
+                    <span>MULAI PENDAKIAN</span>
+                    <i class="fa-solid fa-play"></i>
+                </button>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-slate-100 text-xs text-slate-500 font-semibold">
+                <p>Pengembang / Guru Pengampu:</p>
+                <p class="text-emerald-700 font-bold text-sm">Ayu Savitri, S.Pd</p>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 2: MAIN GAMEPLAY DASHBOARD ================= -->
+        <section id="screen-gameplay" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto">
+            
+            <!-- LEFT COLUMN: VERTICAL MOUNTAIN CLIMB VISUALIZER (4 COLS) -->
+            <div class="lg:col-span-4 bg-gradient-to-b from-sky-300 via-sky-200 to-emerald-100 rounded-3xl p-4 border-4 border-emerald-500 shadow-xl flex flex-col justify-between relative overflow-hidden min-h-[450px]">
+                
+                <!-- Summit Flag / Target -->
+                <div class="flex items-center justify-between bg-white/80 backdrop-blur px-4 py-2 rounded-2xl border border-sky-200 z-10">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-flag-checkered text-rose-500 text-xl glow-flag"></i>
+                        <span class="font-fredoka font-bold text-slate-800 text-sm">Puncak Nusantara</span>
+                    </div>
+                    <span id="progress-percent" class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-1 rounded-lg">0%</span>
+                </div>
+
+                <!-- Mountain Peak Illustration & Trail Nodes -->
+                <div class="relative flex-1 my-4 flex flex-col justify-between items-center py-2 z-10">
+                    
+                    <!-- Vertical Trail SVG Line -->
+                    <svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 1;">
+                        <path id="mountain-path" d="M 180 20 Q 80 120 180 220 T 180 380" fill="none" stroke="#a7f3d0" stroke-width="6" stroke-dasharray="8 8" />
+                    </svg>
+
+                    <!-- Climber Avatar Node (Dynamic Position) -->
+                    <div id="climber-avatar" class="absolute transition-all duration-700 ease-out z-30 flex flex-col items-center animate-climber" style="bottom: 0%; left: 42%;">
+                        <div class="bg-amber-400 text-amber-950 font-bold text-[10px] px-2 py-0.5 rounded-full shadow border border-amber-500 whitespace-nowrap mb-1">
+                            <span id="climber-name-tag">Pendaki</span>
+                        </div>
+                        <div class="w-12 h-12 bg-white rounded-full border-4 border-amber-500 shadow-xl flex items-center justify-center overflow-hidden">
+                            <i class="fa-solid fa-person-hiking text-emerald-600 text-2xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Level Markers (20 Pos Progress) -->
+                    <div id="level-dots-container" class="w-full flex flex-col-reverse justify-between items-center h-full space-y-reverse space-y-1 relative z-20">
+                        <!-- Dynamic Level Dots rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Student Profile Mini Card -->
+                <div class="bg-white/90 backdrop-blur rounded-2xl p-3 border border-emerald-200 z-10 flex items-center justify-between">
+                    <div>
+                        <p id="display-student-name" class="font-bold text-slate-800 text-sm truncate max-w-[140px]">Nama Siswa</p>
+                        <p id="display-student-class" class="text-xs text-slate-500 font-semibold">Kelas X</p>
+                    </div>
+                    <span id="current-pos-badge" class="bg-emerald-600 text-white font-fredoka text-xs px-3 py-1.5 rounded-xl shadow">
+                        Pos 1 / 20
+                    </span>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: MATERIAL & QUIZ CARD (8 COLS) -->
+            <div class="lg:col-span-8 bg-white rounded-3xl p-5 sm:p-7 border-4 border-emerald-400 shadow-xl flex flex-col justify-between">
+                
+                <!-- STEP A: MATERIAL READING STAGE -->
+                <div id="stage-material" class="flex-1 flex flex-col justify-between">
+                    <div>
+                        <!-- Header Material -->
+                        <div class="flex items-center justify-between mb-4 border-b-2 border-slate-100 pb-3">
+                            <span class="bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center">
+                                <i class="fa-solid fa-book-open mr-1.5"></i> Materi Pos <span id="mat-level-num">1</span>
+                            </span>
+                            <span class="text-xs text-slate-400 font-semibold">Baca materi sebelum menjawab</span>
+                        </div>
+
+                        <!-- Title & Content -->
+                        <h3 id="mat-title" class="font-fredoka text-xl sm:text-2xl text-emerald-900 mb-3">
+                            Loading Judul Materi...
+                        </h3>
+
+                        <div id="mat-body" class="text-slate-600 text-sm sm:text-base leading-relaxed space-y-3 bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 max-h-[260px] overflow-y-auto">
+                            <!-- Dynamic Material Text -->
+                        </div>
+                    </div>
+
+                    <!-- Action Button to Quiz -->
+                    <div class="mt-6 pt-4 border-t border-slate-100">
+                        <button onclick="goToQuiz()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-fredoka text-lg sm:text-xl py-3.5 px-6 rounded-2xl shadow-lg hover:shadow-xl transition transform active:scale-95 border-b-4 border-amber-700 flex items-center justify-center space-x-2">
+                            <span>BUKA TANTANGAN SOAL</span>
+                            <i class="fa-solid fa-circle-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP B: QUESTION QUIZ STAGE -->
+                <div id="stage-quiz" class="hidden flex-1 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3 border-b-2 border-amber-100 pb-2">
+                            <span class="bg-amber-100 text-amber-800 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider flex items-center">
+                                <i class="fa-solid fa-circle-question mr-1"></i> Tantangan Pos <span id="quiz-level-num">1</span>
+                            </span>
+                            <span class="text-xs font-bold text-amber-600">Pilih 1 Jawaban Tepat</span>
+                        </div>
+
+                        <h3 id="quiz-question" class="font-bold text-lg sm:text-xl text-slate-800 mb-4 leading-snug">
+                            Loading Soal...
+                        </h3>
+
+                        <!-- Options List -->
+                        <div id="quiz-options" class="space-y-2.5 max-h-[280px] overflow-y-auto pr-1">
+                            <!-- Dynamic Options A, B, C, D, E -->
+                        </div>
+                    </div>
+
+                    <!-- Feedback Alert Overlay -->
+                    <div id="feedback-box" class="hidden my-3 p-3 rounded-2xl text-center font-bold text-sm transform transition-all duration-300">
+                        <span id="feedback-text">Feedback Message</span>
+                    </div>
+
+                    <!-- Toggleable Explanation Container -->
+                    <div id="explanation-box" class="hidden my-2 p-3 bg-indigo-50 border border-indigo-200 rounded-2xl text-xs sm:text-sm text-indigo-900 leading-relaxed max-h-[140px] overflow-y-auto">
+                        <div class="font-bold text-indigo-700 flex items-center mb-1">
+                            <i class="fa-solid fa-lightbulb text-amber-500 mr-1.5 text-base"></i> Penjelasan Materi:
+                        </div>
+                        <p id="explanation-text">-</p>
+                    </div>
+
+                    <!-- Navigation Action Bar -->
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col sm:flex-row gap-2">
+                        <button id="btn-submit-answer" onclick="validateAnswer()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-fredoka text-lg py-3 px-6 rounded-2xl shadow-md hover:shadow-lg transition border-b-4 border-amber-700">
+                            Kirim Jawaban
+                        </button>
+                        
+                        <!-- Toggle Explanation Button -->
+                        <button id="btn-toggle-explain" onclick="toggleExplanation()" class="hidden bg-indigo-600 hover:bg-indigo-700 text-white font-fredoka text-sm py-3 px-4 rounded-2xl shadow-md transition flex items-center justify-center space-x-1.5 border-b-4 border-indigo-800 whitespace-nowrap">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>Penjelasan</span>
+                        </button>
+
+                        <button id="btn-next-level" onclick="nextLevel()" class="hidden w-full bg-blue-600 hover:bg-blue-700 text-white font-fredoka text-lg py-3 px-6 rounded-2xl shadow-md hover:shadow-lg transition border-b-4 border-blue-800 flex items-center justify-center space-x-2">
+                            <span>Lanjut Pendakian</span>
+                            <i class="fa-solid fa-person-walking-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= PAGE 3: GAME OVER / SUMMIT RESULT SCREEN ================= -->
+        <section id="screen-result" class="hidden max-w-xl mx-auto w-full bg-white rounded-3xl shadow-2xl border-4 border-amber-400 p-6 sm:p-8 text-center my-auto">
+            <div class="w-28 h-28 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner relative">
+                <i class="fa-solid fa-trophy text-amber-500 text-6xl"></i>
+                <i class="fa-solid fa-star text-amber-400 text-2xl absolute -top-1 -right-1 animate-bounce"></i>
+            </div>
+
+            <h2 class="font-fredoka text-3xl font-bold text-amber-800 mb-1">SELAMAT! TIBA DI PUNCAK!</h2>
+            <p class="text-sm text-slate-500 mb-6">Pendakian Edukasi Asal Usul Nenek Moyang Indonesia Berhasil Diselesaikan.</p>
+
+            <!-- Student Score Summary -->
+            <div class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-5 rounded-2xl shadow-lg mb-6">
+                <div class="grid grid-cols-2 gap-4 border-b border-emerald-400/50 pb-3 mb-3">
+                    <div>
+                        <p class="text-xs text-emerald-100 font-semibold uppercase">Nama Siswa</p>
+                        <p id="res-student-name" class="font-bold text-lg truncate">-</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-emerald-100 font-semibold uppercase">Kelas / Fase</p>
+                        <p id="res-student-class" class="font-bold text-lg truncate">-</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-xs text-emerald-100 font-semibold uppercase">Skor Akhir</p>
+                        <p id="res-final-score" class="font-fredoka text-3xl font-bold text-amber-300">0 / 100</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-emerald-100 font-semibold uppercase">Waktu Tersisa</p>
+                        <p id="res-time-left" class="font-fredoka text-2xl font-bold text-white">00:00</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Developer & Teacher Badge -->
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 mb-6 text-left">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Guru Mata Pelajaran / Pengembang:</p>
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-800 text-base">Ayu Savitri, S.Pd</p>
+                        <p class="text-xs text-slate-500">Sejarah Indonesia • Fase E Kelas X SMA</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export / Save Action Buttons -->
+            <div class="space-y-3">
+                <button onclick="downloadCSVReport()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-fredoka text-lg py-3 rounded-2xl shadow-md transition flex items-center justify-center space-x-2 border-b-4 border-emerald-800">
+                    <i class="fa-solid fa-file-excel"></i>
+                    <span>Unduh Laporan Nilai (CSV)</span>
+                </button>
+
+                <button onclick="restartGame()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-fredoka text-lg py-3 rounded-2xl transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Ulangi Pendakian</span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-center text-xs py-3 px-4 border-t border-slate-800">
+        <p>© Modul Pembelajaran Sejarah Indonesia Fase E Kelas X SMA</p>
+        <p class="text-emerald-400 font-semibold mt-0.5">Dikembangkan oleh: Ayu Savitri, S.Pd</p>
+    </footer>
+
+    <script>
+        /* 
+         * DATA CURRICULUM: 20 LEVELS FOR FASE E KELAS X SMA
+         * Topic: Asal Usul Nenek Moyang Bangsa Indonesia
+         */
+        const gameData = [
+            {
+                level: 1,
+                title: "Konsep Dasar Asal Usul Bangsa",
+                material: "Bangsa Indonesia memiliki keberagaman suku dan budaya. Berdasarkan penelitian sejarah, arkeologi, dan genetika, nenek moyang bangsa Indonesia tidak datang secara bersamaan, melainkan melalui beberapa gelombang migrasi manusia purba dan modern.",
+                question: "Nenek moyang bangsa Indonesia datang ke kepulauan Nusantara melalui...",
+                options: [
+                    "Satu gelombang tunggal dalam waktu bersamaan",
+                    "Beberapa gelombang migrasi lintas periode sejarah",
+                    "Jalur perdagangan Eropa pada abad ke-15",
+                    "Isolasi total tanpa ada pengaruh luar",
+                    "Invasi militer kerajaan kuno"
+                ],
+                answerIndex: 1,
+                explanation: "Nenek moyang bangsa Indonesia datang secara bertahap melalui beberapa gelombang migrasi (seperti Melanesoid, Proto Melayu, dan Deutro Melayu) pada rentang waktu sejarah yang berbeda-beda."
+            },
+            {
+                level: 2,
+                title: "Teori Yunnan (Asal Usul Selatan Tiongkok)",
+                material: "Teori Yunnan menyatakan bahwa nenek moyang bangsa Indonesia berasal dari Yunnan, Tiongkok Selatan. Tokoh pendukung teori ini adalah R.H. Geldern dan J.H.C. Kern. Alasan utamanya adalah ditemukannya kesamaan kapak persegi di Tiongkok dan Nusantara.",
+                question: "Bukti arkeologis utama yang mendukung Teori Yunnan adalah kesamaan bentuk artefak berupa...",
+                options: [
+                    "Kapak Lonjong dan Nekara",
+                    "Kapak Persegi di Tiongkok dan Nusantara",
+                    "Prasasti batu berbahasa Sansekerta",
+                    "Candi berundak khas Asia Timur",
+                    "Mata panah tulang di wilayah Maros"
+                ],
+                answerIndex: 1,
+                explanation: "R.H. Geldern menemukan adanya kesamaan bentuk kebudayaan kapak persegi yang ada di Tiongkok Selatan dengan kapak persegi yang tersebar di wilayah Nusantara."
+            },
+            {
+                level: 3,
+                title: "Jalur Migrasi Teori Yunnan",
+                material: "Migrasi dari Yunnan menuju Nusantara mengarungi sungai-sungai besar di Asia Tenggara seperti Sungai Mekong, hingga menggunakan perahu cadik untuk menyebar ke pulau-pulau di Indonesia.",
+                question: "Sungai utama di Asia Tenggara yang menjadi rute alami migrasi Teori Yunnan adalah...",
+                options: [
+                    "Sungai Yangtze",
+                    "Sungai Gangga",
+                    "Sungai Mekong",
+                    "Sungai Indus",
+                    "Sungai Huang Ho"
+                ],
+                answerIndex: 2,
+                explanation: "Sungai Mekong merupakan jalur migrasi darat dan perairan utama yang membelah Asia Tenggara daratan menuju kepulauan Nusantara."
+            },
+            {
+                level: 4,
+                title: "Teori Nusantara (Pribumi Asli)",
+                material: "Teori Nusantara dipelopori oleh Prof. Dr. Mohammad Yamin dan J. Crawford. Teori ini menyatakan bahwa nenek moyang bangsa Indonesia berasal dari wilayah Nusantara itu sendiri, didukung oleh tingginya peradaban bangsa Melayu kuno.",
+                question: "Tokoh nasional Indonesia yang merupakan salah satu pendukung kuat Teori Nusantara adalah...",
+                options: [
+                    "Ir. Soekarno",
+                    "Prof. Dr. Mohammad Yamin",
+                    "Drs. Mohammad Hatta",
+                    "Ki Hajar Dewantara",
+                    "Sutan Sjahrir"
+                ],
+                answerIndex: 1,
+                explanation: "Prof. Dr. Mohammad Yamin berpendapat bahwa bangsa Indonesia berasal dari wilayah Nusantara sendiri, didasarkan pada fosil dan bukti kebudayaan Melayu yang telah berkembang pesat."
+            },
+            {
+                level: 5,
+                title: "Teori Out of Taiwan",
+                material: "Teori Out of Taiwan dikemukakan oleh Harry Truman Simanjuntak. Berdasarkan pendekatan kebahasaaan (linguistik), rumpun bahasa Austronesia yang digunakan mayoritas masyarakat Indonesia berasal dari kepulauan Taiwan.",
+                question: "Pendekatan ilmu pengetahuan utama yang menjadi pilar pendukung Teori Out of Taiwan adalah...",
+                options: [
+                    "Geologi dan Batuan",
+                    "Linguistik (Kebahasaan Austronesia)",
+                    "Astronomi kuno",
+                    "Sastra klasik",
+                    "Arsitektur candi"
+                ],
+                answerIndex: 1,
+                explanation: "Teori Out of Taiwan didukung kuat oleh bukti linguistik (kebahasaan), di mana perkembangan rumpun bahasa Austronesia berakar dari bahasa yang dituturkan di Taiwan."
+            },
+            {
+                level: 6,
+                title: "Teori Out of Africa",
+                material: "Teori Out of Africa menyatakan bahwa seluruh manusia modern (Homo sapiens) berasal dari Afrika yang berevolusi sekitar 200.000 tahun lalu, kemudian menyebar ke seluruh penjuru bumi termasuk Nusantara sekitar 60.000 tahun lalu.",
+                question: "Menurut Teori Out of Africa, jenis manusia kuno yang melakukan migrasi hingga ke Nusantara adalah...",
+                options: [
+                    "Homo erectus",
+                    "Meganthropus paleojavanicus",
+                    "Homo sapiens",
+                    "Pithecanthropus erectus",
+                    "Homo neanderthalensis"
+                ],
+                answerIndex: 2,
+                explanation: "Teori Out of Africa secara spesifik menjelaskan migrasi dari jenis manusia modern yaitu Homo sapiens yang menggantikan populasi manusia purba terdahulu."
+            },
+            {
+                level: 7,
+                title: "Ras Papua Melanesoid",
+                material: "Gelombang migrasi awal menuju Nusantara diisi oleh ras Melanesoid (Melanesia) sekitar 100.000 hingga 70.000 SM. Ciri fisiknya antara lain kulit gelap, rambut keriting, dan bibir agak tebal. Keturunannya saat ini mayoritas mendiami wilayah Papua dan Nusa Tenggara.",
+                question: "Keturunan ras Melanesoid di Indonesia saat ini sebagian besar bermukim di wilayah...",
+                options: [
+                    "Sumatera Barat dan Riau",
+                    "Jawa Barat dan Banten",
+                    "Papua dan Nusa Tenggara",
+                    "Kalimantan Barat",
+                    "Sulawesi Utara"
+                ],
+                answerIndex: 2,
+                explanation: "Populasi ras Melanesoid terdesak ke arah timur saat migrasi bangsa Melayu datang, sehingga keturunannya kini mendiami Papua, Maluku, dan Nusa Tenggara."
+            },
+            {
+                level: 8,
+                title: "Bangsa Proto Melayu (Melayu Tua)",
+                material: "Proto Melayu masuk ke Nusantara sekitar tahun 1500 SM melalui dua jalur: Jalur Barat (Semenanjung Melayu - Sumatera - Jawa) dan Jalur Utara (Filipina - Sulawesi). Mereka membawa kebudayaan Neolitikum (Batu Muda).",
+                question: "Bangsa Proto Melayu memasuki wilayah Nusantara dengan membawa kebudayaan...",
+                options: [
+                    "Paleolitikum (Batu Tua)",
+                    "Mesolitikum (Batu Madya)",
+                    "Neolitikum (Batu Muda)",
+                    "Perundagian (Logam)",
+                    "Megalitikum Modern"
+                ],
+                answerIndex: 2,
+                explanation: "Bangsa Proto Melayu dikenal membawa tradisi Neolitikum (batu muda) yang sudah diasah halus, seperti kapak persegi dan kapak lonjong."
+            },
+            {
+                level: 9,
+                title: "Suku Keturunan Proto Melayu",
+                material: "Suku bangsa di Indonesia yang merupakan keturunan langsung dari bangsa Proto Melayu (Melayu Tua) antara lain suku Batak, suku Toraja, suku Dayak, dan suku Nias.",
+                question: "Berikut ini yang merupakan suku keturunan dari bangsa Proto Melayu adalah...",
+                options: [
+                    "Suku Jawa dan Sunda",
+                    "Suku Dayak, Toraja, dan Batak",
+                    "Suku Bugis dan Minangkabau",
+                    "Suku Bali dan Madura",
+                    "Suku Betawi dan Baduy"
+                ],
+                answerIndex: 1,
+                explanation: "Suku Dayak, Toraja, Nias, dan Batak tergolong keturunan Proto Melayu yang umumnya bermukim di daerah pedalaman."
+            },
+            {
+                level: 10,
+                title: "Bangsa Deutro Melayu (Melayu Muda)",
+                material: "Deutro Melayu migrasi ke Nusantara sekitar tahun 500 SM. Mereka memiliki tingkat kebudayaan yang lebih maju daripada Proto Melayu karena sudah menguasai teknologi pengolahan logam (perunggu dan besi).",
+                question: "Keunggulan utama teknologi yang dibawa oleh bangsa Deutro Melayu adalah kemampuan...",
+                options: [
+                    "Membuat alat batu kasar",
+                    "Mengolah dan memproduksi logam",
+                    "Membangun kapal uap",
+                    "Bercocok tanam gandum",
+                    "Membuat keramik halus porselen"
+                ],
+                answerIndex: 1,
+                explanation: "Deutro Melayu atau Melayu Muda membawa kebudayaan Dongson yang ditandai oleh kemahiran peleburan dan pengolahan logam (perunggu dan besi)."
+            },
+            {
+                level: 11,
+                title: "Suku Keturunan Deutro Melayu",
+                material: "Suku-suku di Indonesia yang termasuk keturunan bangsa Deutro Melayu meliputi Suku Jawa, Sunda, Minangkabau, Bugis, Bali, dan Melayu.",
+                question: "Suku bangsa berikut ini yang tergolong dalam kelompok keturunan Deutro Melayu adalah...",
+                options: [
+                    "Suku Dayak dan Nias",
+                    "Suku Jawa, Sunda, dan Bugis",
+                    "Suku Asmat dan Dani",
+                    "Suku Toraja dan Mentawai",
+                    "Suku Kubu dan Sakai"
+                ],
+                answerIndex: 1,
+                explanation: "Suku Jawa, Sunda, Bugis, Minangkabau, dan Bali adalah contoh kelompok keturunan Deutro Melayu yang bermukim di daerah pesisir dan dataran rendah."
+            },
+            {
+                level: 12,
+                title: "Kebudayaan Dongson",
+                material: "Kebudayaan Deutro Melayu sangat dipengaruhi oleh Kebudayaan Dongson yang berasal dari Vietnam Utara. Artefak khas kebudayaan ini antara lain Nekara perunggu dan Candi/Kapak Perunggu.",
+                question: "Pusat kebudayaan logam perunggu di Asia Tenggara yang mempengaruhi gelombang Deutro Melayu adalah...",
+                options: [
+                    "Kebudayaan Bacson-Hoabinh",
+                    "Kebudayaan Dongson",
+                    "Kebudayaan Sa Huynh",
+                    "Kebudayaan Harappa",
+                    "Kebudayaan Mohenjo-Daro"
+                ],
+                answerIndex: 1,
+                explanation: "Kebudayaan Dongson yang terletak di lembah Sungai Ma, Vietnam Utara merupakan pusat perkembangan seni cetak logam perunggu di Asia Tenggara."
+            },
+            {
+                level: 13,
+                title: "Kebudayaan Bacson-Hoabinh",
+                material: "Kebudayaan Bacson-Hoabinh identik dengan peninggalan batu kapak genggam Sumatera (Pebble) dan alat-alat dari tulang pada masa Mesolitikum di Nusantara.",
+                question: "Alat batu khas Mesolitikum hasil pengaruh kebudayaan Bacson-Hoabinh di Indonesia dinamakan...",
+                options: [
+                    "Kapak Persegi",
+                    "Pebble (Kapak Genggam Sumatera)",
+                    "Nekara",
+                    "Bejana Perunggu",
+                    "Menhir"
+                ],
+                answerIndex: 1,
+                explanation: "Pebble (Kapak Genggam Sumatera) terbuat dari batu kerakal sungai yang dibelah dan dihaluskan salah satu sisinya, berasal dari pengaruh kebudayaan Bacson-Hoabinh."
+            },
+            {
+                level: 14,
+                title: "Perahu Cadik dan Kemampuan Bahari",
+                material: "Nenek moyang bangsa Indonesia dikenal sebagai pelaut tangguh. Mereka menjelajahi samudera menggunakan Perahu Cadik (layar bermanggar) dengan memanfaatkan ilmu astronomi rasi bintang sebagai petunjuk arah.",
+                question: "Sarana transportasi utama nenek moyang Nusantara dalam menjelajahi lautan adalah...",
+                options: [
+                    "Kapal Jung Raksasa",
+                    "Perahu Cadik",
+                    "Kora-kora Perang",
+                    "Rakit Bambu Sederhana",
+                    "Perahu Sampan Kayu Tanpa Layar"
+                ],
+                answerIndex: 1,
+                explanation: "Perahu cadik dilengkapi dengan penyeimbang (cadik) di kedua sisinya sehingga sangat stabil mengarungi gelombang laut samudra."
+            },
+            {
+                level: 15,
+                title: "Corak Kepercayaan Kuno: Animisme",
+                material: "Sebelum masuknya agama-agama besar, nenek moyang bangsa Indonesia menganut Animisme, yaitu kepercayaan bahwa semua benda di alam memiliki roh atau jiwa yang berpengaruh bagi kehidupan.",
+                question: "Kepercayaan nenek moyang terhadap adanya roh yang mendiami benda-benda dinamakan...",
+                options: [
+                    "Dinamisme",
+                    "Animisme",
+                    "Totemisme",
+                    "Politeisme",
+                    "Monoteisme"
+                ],
+                answerIndex: 1,
+                explanation: "Animisme berasal dari kata 'anima' (roh/jiwa), yaitu sistem kepercayaan bahwa setiap benda (pohon, sungai, batu) memiliki roh penunggu."
+            },
+            {
+                level: 16,
+                title: "Corak Kepercayaan Kuno: Dinamisme",
+                material: "Dinamisme adalah kepercayaan bahwa benda-benda tertentu (seperti keris, batu besar, atau pohon tua) memiliki kekuatan gaib atau kesaktian yang dapat memberi perlindungan.",
+                question: "Paham yang meyakini bahwa benda-benda tertentu memiliki kekuatan gaib/sakral dinamakan...",
+                options: [
+                    "Animisme",
+                    "Dinamisme",
+                    "Ateisme",
+                    "Monisme",
+                    "Rationalisme"
+                ],
+                answerIndex: 1,
+                explanation: "Dinamisme berfokus pada kekuatan gaib atau energi sakral (kesaktian) yang dipercayai bersemayam di dalam benda-benda tertentu."
+            },
+            {
+                level: 17,
+                title: "Tradisi Megalitikum (Batu Besar)",
+                material: "Tradisi Megalitikum adalah kebudayaan mendirikan bangunan dari batu berukuran besar untuk sarana pemujaan roh nenek moyang. Contohnya: Menhir, Punden Berundak, Dolmen, dan Sarkofagus.",
+                question: "Bangunan batu besar berbentuk tugu bertiang tunggal untuk memuja roh nenek moyang disebut...",
+                options: [
+                    "Dolmen",
+                    "Menhir",
+                    "Sarkofagus",
+                    "Punden Berundak",
+                    "Waruga"
+                ],
+                answerIndex: 1,
+                explanation: "Menhir adalah tugu atau tiang batu tunggal yang didirikan sebagai lambang penghormatan dan pemujaan bagi roh leluhur."
+            },
+            {
+                level: 18,
+                title: "Meja Batu (Dolmen)",
+                material: "Dolmen adalah meja batu besar yang digunakan sebagai tempat meletakkan sesaji untuk roh leluhur, serta terkadang difungsikan sebagai penutup makam batu.",
+                question: "Bangunan batu besar berbentuk meja yang berfungsi sebagai tempat meletakkan sesaji adalah...",
+                options: [
+                    "Sarkofagus",
+                    "Dolmen",
+                    "Waruga",
+                    "Punden Berundak",
+                    "Menhir"
+                ],
+                answerIndex: 1,
+                explanation: "Dolmen berupa meja dari batu datar yang ditopang kaki-kaki batu, difungsikan sebagai alas tempat sesaji persembahan."
+            },
+            {
+                level: 19,
+                title: "Punden Berundak",
+                material: "Punden berundak adalah bangunan batu bertingkat-tingkat yang menjadi cikal bakal arsitektur candi di Indonesia pada masa Hindu-Buddha.",
+                question: "Bangunan Megalitikum bertingkat yang mempengaruhi bentuk dasar Candi Borobudur adalah...",
+                options: [
+                    "Dolmen",
+                    "Waruga",
+                    "Punden Berundak",
+                    "Sarkofagus",
+                    "Menhir"
+                ],
+                answerIndex: 2,
+                explanation: "Punden berundak memiliki struktur teras bertingkat-tingkat naik ke atas, yang kemudian mengilhami struktur bangunan candi di Nusantara seperti Borobudur."
+            },
+            {
+                level: 20,
+                title: "Kharakteristik & Nilai Budaya Bangsa",
+                material: "Nilai-nilai luhur yang diwariskan oleh nenek moyang bangsa Indonesia hingga saat ini meliputi tradisi gotong royong, musyawarah, kemampuan beradaptasi dengan alam, serta sikap terbuka terhadap kebudayaan lain.",
+                question: "Nilai luhur sosial yang diwariskan oleh nenek moyang Nusantara dan menjadi jati diri bangsa Indonesia adalah...",
+                options: [
+                    "Individualisme",
+                    "Gotong Royong dan Kebersamaan",
+                    "Feodalisme",
+                    "Konsumerisme",
+                    "Sikap tertutup dari dunia luar"
+                ],
+                answerIndex: 1,
+                explanation: "Semangat gotong royong, musyawarah, dan keterbukaan budaya merupakan peninggalan nilai luhur non-materiil dari nenek moyang bangsa Indonesia."
+            }
+        ];
+
+        /* STATE VARIABLES */
+        let studentName = "";
+        let studentClass = "";
+        let currentLevel = 1;
+        let totalScore = 0;
+        let timerSeconds = 20 * 60; // 20 Minutes
+        let timerInterval = null;
+        let selectedOptionIndex = null;
+        let activeShuffledOptions = [];
+        let userAnswersLog = [];
+
+        /* INITIALIZE LEVEL DOTS IN MOUNTAIN VISUALIZER */
+        function renderMountainDots() {
+            const container = document.getElementById("level-dots-container");
+            container.innerHTML = "";
+            for (let i = 1; i <= 20; i++) {
+                const dot = document.createElement("div");
+                dot.id = `dot-level-${i}`;
+                dot.className = `w-6 h-6 rounded-full font-bold text-[10px] flex items-center justify-center border-2 transition-all duration-300 ${
+                    i === 1 ? 'bg-amber-400 border-white text-slate-900 scale-110 shadow' : 'bg-white/60 border-emerald-300 text-emerald-800'
+                }`;
+                dot.innerText = i;
+                container.appendChild(dot);
+            }
+        }
+
+        /* START GAME EVENT */
+        function startGame(e) {
+            e.preventDefault();
+            studentName = document.getElementById("student-name").value.trim();
+            studentClass = document.getElementById("student-class").value.trim();
+
+            if (!studentName || !studentClass) return;
+
+            // Update UI Headers & Display Names
+            document.getElementById("display-student-name").innerText = studentName;
+            document.getElementById("display-student-class").innerText = studentClass;
+            document.getElementById("climber-name-tag").innerText = studentName.split(" ")[0];
+
+            // Switch Screen
+            document.getElementById("screen-welcome").classList.add("hidden");
+            document.getElementById("screen-gameplay").classList.remove("hidden");
+            document.getElementById("header-stats").classList.remove("hidden");
+
+            // Setup Mountain Visualizer
+            renderMountainDots();
+
+            // Start Timer
+            startTimer();
+
+            // Load Level 1
+            loadLevel(1);
+        }
+
+        /* COUNTDOWN TIMER LOGIC */
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                const mins = Math.floor(timerSeconds / 60);
+                const secs = timerSeconds % 60;
+                document.getElementById("timer-display").innerText = 
+                    `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    finishGame();
+                }
+            }, 1000);
+        }
+
+        /* LOAD SPECIFIC LEVEL CONTENT */
+        function loadLevel(lvl) {
+            currentLevel = lvl;
+            const data = gameData[lvl - 1];
+
+            // Update Material Stage
+            document.getElementById("mat-level-num").innerText = data.level;
+            document.getElementById("mat-title").innerText = data.title;
+            document.getElementById("mat-body").innerHTML = `<p>${data.material}</p>`;
+
+            // Update Quiz Stage
+            document.getElementById("quiz-level-num").innerText = data.level;
+            document.getElementById("quiz-question").innerText = data.question;
+            document.getElementById("explanation-text").innerText = data.explanation || "Tidak ada penjelasan tambahan.";
+
+            // Prepare Shuffled Options A, B, C, D, E
+            const rawOptions = [...data.options];
+            
+            // Shuffle
+            const shuffled = rawOptions.map(val => ({ val, sort: Math.random() }))
+                                       .sort((a, b) => a.sort - b.sort)
+                                       .map(el => el.val);
+
+            activeShuffledOptions = shuffled;
+            selectedOptionIndex = null;
+
+            // Render Options HTML
+            const optionsContainer = document.getElementById("quiz-options");
+            optionsContainer.innerHTML = "";
+
+            const labels = ["A", "B", "C", "D", "E"];
+            shuffled.forEach((optText, idx) => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "quiz-opt-btn w-full text-left p-3.5 rounded-xl border-2 border-slate-200 hover:border-emerald-400 bg-white hover:bg-emerald-50/50 transition flex items-center space-x-3 text-sm sm:text-base font-semibold text-slate-700";
+                btn.onclick = () => selectOption(idx);
+                btn.setAttribute("data-index", idx);
+
+                btn.innerHTML = `
+                    <span class="w-7 h-7 rounded-lg bg-slate-100 border border-slate-300 text-slate-600 flex items-center justify-center font-bold text-xs uppercase group-hover:bg-emerald-500 group-hover:text-white">${labels[idx]}</span>
+                    <span class="flex-1">${optText}</span>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+
+            // Reset Stage & UI Component Visibility
+            document.getElementById("stage-material").classList.remove("hidden");
+            document.getElementById("stage-quiz").classList.add("hidden");
+            document.getElementById("feedback-box").classList.add("hidden");
+            document.getElementById("explanation-box").classList.add("hidden");
+
+            document.getElementById("btn-submit-answer").classList.remove("hidden");
+            document.getElementById("btn-toggle-explain").classList.add("hidden");
+            document.getElementById("btn-next-level").classList.add("hidden");
+
+            // Update Climber Visual
+            updateClimberPosition(lvl);
+        }
+
+        /* TOGGLE EXPLANATION BOX */
+        function toggleExplanation() {
+            const expBox = document.getElementById("explanation-box");
+            expBox.classList.toggle("hidden");
+        }
+
+        /* SWITCH FROM MATERIAL READING TO QUIZ */
+        function goToQuiz() {
+            document.getElementById("stage-material").classList.add("hidden");
+            document.getElementById("stage-quiz").classList.remove("hidden");
+        }
+
+        /* OPTION SELECTION */
+        function selectOption(index) {
+            selectedOptionIndex = index;
+            const buttons = document.querySelectorAll(".quiz-opt-btn");
+            
+            buttons.forEach((btn, idx) => {
+                if (idx === index) {
+                    btn.classList.remove("border-slate-200", "bg-white");
+                    btn.classList.add("border-amber-500", "bg-amber-50", "ring-2", "ring-amber-200");
+                } else {
+                    btn.classList.remove("border-amber-500", "bg-amber-50", "ring-2", "ring-amber-200");
+                    btn.classList.add("border-slate-200", "bg-white");
+                }
+            });
+        }
+
+        /* VALIDATE ANSWER */
+        function validateAnswer() {
+            if (selectedOptionIndex === null) {
+                showFeedback("Pilih salah satu jawaban terlebih dahulu!", "warning");
+                return;
+            }
+
+            const currentData = gameData[currentLevel - 1];
+            const selectedText = activeShuffledOptions[selectedOptionIndex];
+            const originalCorrectText = currentData.options[currentData.answerIndex];
+            const isCorrect = (selectedText === originalCorrectText);
+
+            // Log answer result
+            userAnswersLog.push({
+                level: currentLevel,
+                question: currentData.question,
+                selected: selectedText,
+                correct: isCorrect
+            });
+
+            const btnSubmit = document.getElementById("btn-submit-answer");
+            const btnNext = document.getElementById("btn-next-level");
+            const btnExplain = document.getElementById("btn-toggle-explain");
+
+            // Lock options from further selection
+            const buttons = document.querySelectorAll(".quiz-opt-btn");
+            buttons.forEach(btn => btn.onclick = null);
+
+            if (isCorrect) {
+                totalScore += 5; // 5 points per correct answer (Total 100)
+                document.getElementById("score-display").innerText = `Skor: ${totalScore}`;
+                showFeedback("🎉 BENAR! Jawabanmu tepat. Lanjut naik ke pos berikutnya!", "success");
+
+                // Highlight correct option
+                highlightOption(selectedOptionIndex, "success");
+            } else {
+                showFeedback("❌ Kurang Tepat! Tetap semangat, klik 'Penjelasan' untuk belajar dan lanjut pendakian.", "error");
+                highlightOption(selectedOptionIndex, "error");
+
+                // Highlight real correct option as green for guidance
+                const correctShuffledIndex = activeShuffledOptions.indexOf(originalCorrectText);
+                if (correctShuffledIndex !== -1) {
+                    highlightOption(correctShuffledIndex, "success");
+                }
+            }
+
+            // Always allow moving forward and show explanation button regardless of correct/wrong answer
+            btnSubmit.classList.add("hidden");
+            btnExplain.classList.remove("hidden");
+            btnNext.classList.remove("hidden");
+        }
+
+        /* HIGHLIGHT OPTION STYLING AFTER ANSWERING */
+        function highlightOption(index, type) {
+            const buttons = document.querySelectorAll(".quiz-opt-btn");
+            if (!buttons[index]) return;
+
+            const btn = buttons[index];
+            btn.classList.remove("border-amber-500", "bg-amber-50", "ring-2", "ring-amber-200", "border-slate-200", "bg-white");
+
+            if (type === "success") {
+                btn.classList.add("border-emerald-500", "bg-emerald-100", "text-emerald-900");
+            } else if (type === "error") {
+                btn.classList.add("border-rose-500", "bg-rose-100", "text-rose-900");
+            }
+        }
+
+        /* DISPLAY FEEDBACK ALERT */
+        function showFeedback(msg, type) {
+            const box = document.getElementById("feedback-box");
+            const text = document.getElementById("feedback-text");
+
+            box.classList.remove("hidden", "bg-emerald-100", "text-emerald-800", "bg-rose-100", "text-rose-800", "bg-amber-100", "text-amber-800");
+
+            if (type === "success") {
+                box.classList.add("bg-emerald-100", "text-emerald-800", "border", "border-emerald-300");
+            } else if (type === "error") {
+                box.classList.add("bg-rose-100", "text-rose-800", "border", "border-rose-300");
+            } else {
+                box.classList.add("bg-amber-100", "text-amber-800", "border", "border-amber-300");
+            }
+
+            text.innerText = msg;
+        }
+
+        /* ADVANCE TO NEXT LEVEL OR FINISH */
+        function nextLevel() {
+            if (currentLevel < 20) {
+                loadLevel(currentLevel + 1);
+            } else {
+                finishGame();
+            }
+        }
+
+        /* UPDATE CLIMBER AVATAR & POS BADGES */
+        function updateClimberPosition(lvl) {
+            const percent = Math.round(((lvl - 1) / 19) * 100);
+            
+            // Move Climber Avatar vertically
+            const climber = document.getElementById("climber-avatar");
+            climber.style.bottom = `${percent * 0.82}%`;
+
+            // Update Progress Percentage Display
+            document.getElementById("progress-percent").innerText = `${percent}%`;
+            document.getElementById("current-pos-badge").innerText = `Pos ${lvl} / 20`;
+
+            // Update Dots Highlights
+            for (let i = 1; i <= 20; i++) {
+                const dot = document.getElementById(`dot-level-${i}`);
+                if (!dot) continue;
+
+                if (i === lvl) {
+                    dot.className = "w-6 h-6 rounded-full font-bold text-[10px] flex items-center justify-center bg-amber-400 border-2 border-white text-slate-900 scale-125 shadow-lg z-20";
+                } else if (i < lvl) {
+                    dot.className = "w-6 h-6 rounded-full font-bold text-[10px] flex items-center justify-center bg-emerald-500 border-2 border-emerald-200 text-white z-10";
+                } else {
+                    dot.className = "w-6 h-6 rounded-full font-bold text-[10px] flex items-center justify-center bg-white/70 border border-emerald-300 text-emerald-800 z-10";
+                }
+            }
+        }
+
+        /* FINISH GAME & DISPLAY RESULTS */
+        function finishGame() {
+            clearInterval(timerInterval);
+
+            // Hide Gameplay & Header Stats
+            document.getElementById("screen-gameplay").classList.add("hidden");
+            document.getElementById("header-stats").classList.add("hidden");
+
+            // Calculate Remaining Time Format
+            const minsLeft = Math.floor(timerSeconds / 60);
+            const secsLeft = timerSeconds % 60;
+            const timeFormatted = `${minsLeft.toString().padStart(2, '0')}:${secsLeft.toString().padStart(2, '0')}`;
+
+            // Populate Results UI
+            document.getElementById("res-student-name").innerText = studentName;
+            document.getElementById("res-student-class").innerText = studentClass;
+            document.getElementById("res-final-score").innerText = `${totalScore} / 100`;
+            document.getElementById("res-time-left").innerText = timeFormatted;
+
+            // Show Screen Result
+            document.getElementById("screen-result").classList.remove("hidden");
+        }
+
+        /* DOWNLOAD CSV REPORT FOR TEACHER SHEET */
+        function downloadCSVReport() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Nama Siswa,Kelas,Skor Akhir,Waktu Tersisa,Pengembang / Guru\n";
+            csvContent += `"${studentName}","${studentClass}",${totalScore},"${document.getElementById("res-time-left").innerText}","Ayu Savitri, S.Pd"\n\n`;
+            
+            csvContent += "Pos Level,Pertanyaan,Jawaban Siswa,Status\n";
+            userAnswersLog.forEach(log => {
+                const status = log.correct ? "BENAR" : "SALAH";
+                const qClean = log.question.replace(/"/g, '""');
+                const aClean = log.selected.replace(/"/g, '""');
+                csvContent += `${log.level},"${qClean}","${aClean}",${status}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Laporan_Pendakian_${studentName.replace(/\s+/g, '_')}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        /* RESTART GAME */
+        function restartGame() {
+            currentLevel = 1;
+            totalScore = 0;
+            timerSeconds = 20 * 60;
+            userAnswersLog = [];
+
+            document.getElementById("screen-result").classList.add("hidden");
+            document.getElementById("screen-welcome").classList.remove("hidden");
+            document.getElementById("score-display").innerText = "Skor: 0";
+            document.getElementById("form-student").reset();
+        }
+    </script>
+</body>
+</html>
